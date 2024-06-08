@@ -24,11 +24,6 @@
     margin-bottom: 40px;
   }
 
-  img {
-    width: 300px;
-    margin-bottom: 40px;
-  }
-
   a {
     font-size: 1.2rem;
     color: #007bff;
@@ -41,9 +36,36 @@
 </style>
 </head>
 <body>
-  <img src="https://cdn.pixabay.com/photo/2013/07/12/16/21/israel-150728_960_720.png" alt="Israel Flag">
   <h1>Access Denied</h1>
-  <p>You cannot visit our website, you are blacklisted.</p>
-  <p>Reason: You reside in Israel.</p>
+  <p id="message">You cannot visit our website, you are blacklisted.</p>
+  <p id="reason"></p>
+
+  <script>
+    // Function to get the visitor's country
+    function getCountry() {
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+          const country = data.country_name;
+          const messageElement = document.getElementById('message');
+          const reasonElement = document.getElementById('reason');
+          
+          if (country === 'United States') {
+            reasonElement.textContent = 'Reason: You reside in the US.';
+          } else if (country === 'Israel') {
+            reasonElement.textContent = 'Reason: You reside in Israel.';
+          } else {
+            messageElement.textContent = 'Error: You are not from Israel or the US.';
+            reasonElement.innerHTML = 'If you think this is an error, please <a href="https://discord.com">join our Discord</a>.';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching the geolocation data:', error);
+        });
+    }
+
+    // Call the function to get the country on page load
+    window.onload = getCountry;
+  </script>
 </body>
 </html>
